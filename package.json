@@ -6,7 +6,8 @@
   "author": "Susisu <susisu2413@yahoo.co.jp>",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "!lib/__tests__"
   ],
   "scripts": {
     "lint": "eslint --ext .js,.ts src '*.js'",
