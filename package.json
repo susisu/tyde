@@ -1,8 +1,8 @@
 {
-  "name": "@susisu/minievent",
+  "name": "@susisu/tyde",
   "version": "0.0.0",
   "main": "lib/index.js",
-  "repository": "https://github.com/susisu/minievent.git",
+  "repository": "https://github.com/susisu/tyde.git",
   "author": "Susisu <susisu2413@yahoo.co.jp>",
   "license": "MIT",
   "files": [

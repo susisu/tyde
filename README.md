@@ -1,20 +1,20 @@
-# @susisu/minievent
+# @susisu/tyde
 A library for implementing simple event subscription APIs.
 
 ## Installation
 ``` shell
-npm i @susisu/minievent
+npm i @susisu/tyde
 # or
-yarn add @susisu/minievent
+yarn add @susisu/tyde
 ```
 
 ## Usage
-minievent provides APIs similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit), but strongly-typed.
+tyde provides APIs similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit).
 
 The simplest usage is subscribing events with `.on()` and emitting events with `.emit()`.
 
 ``` typescript
-import { Emitter } from "@susisu/minievent";
+import { Emitter } from "@susisu/tyde";
 
 const emitter = new Emitter();
 
