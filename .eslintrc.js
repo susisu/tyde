@@ -13,6 +13,9 @@ module.exports = {
       "env": {
         "es6": true,
       },
+      "rules": {
+        "no-dupe-class-members": "off",
+      },
     },
     {
       "files"        : ["*.js"],

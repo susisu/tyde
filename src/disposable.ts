@@ -1,6 +1,6 @@
 export interface IDisposable {
   /**
-   * Disposes some resources attached to this object.
+   * Disposes resources attached to this object.
    */
   dispose(): void;
 }

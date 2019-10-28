@@ -10,7 +10,7 @@ type SingletonKey<K extends string> =
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
 export type Listener<T> = (value: T) => void;
-export type Subscription<T> = (listener: Listener<T>) => IDisposable;
+export type Subscribable<T> = (listener: Listener<T>) => IDisposable;
 
 type ListenerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
   { [K in Keys]?: Set<Listener<ValueTypes[K]>> };
@@ -28,34 +28,39 @@ export class Emitter<
   /**
    * Attaches a listener function to a key.
    * @param key A key string.
+   * @returns A function that takes a listener function and returns a disposable.
+   */
+  on<K extends Keys>(
+    key: SingletonKey<K>,
+  ): Subscribable<ValueTypes[SingletonKey<K>]>;
+
+  /**
+   * Attaches a listener function to a key.
+   * @param key A key string.
    * @param listener A listener function which is invoked when an event is emitted.
    * @returns A disposable object which removes the listener function when disposed.
    */
   on<K extends Keys>(
     key: SingletonKey<K>, listener: Listener<ValueTypes[SingletonKey<K>]>,
-  ): IDisposable {
-    let listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
-      this.listenerSets[key];
-    if (!listenerSet) {
-      listenerSet = new Set();
-      this.listenerSets[key] = listenerSet;
-    }
-    listenerSet.add(listener);
-    return new Disposable(() => {
-      this.off(key, listener);
-    });
-  }
+  ): IDisposable;
 
-  /**
-   * Returns a function that attaches a listener function to a key.
-   * This is a curried version of `on()`.
-   * @param key A key string.
-   * @returns A function that takes a listener function and returns a disposable.
-   */
-  subscription<K extends Keys>(
-    key: SingletonKey<K>,
-  ): (listener: Listener<ValueTypes[SingletonKey<K>]>) => IDisposable {
-    return listener => this.on(key, listener);
+  on<K extends Keys>(
+    key: SingletonKey<K>, listener?: Listener<ValueTypes[SingletonKey<K>]>,
+  ): Subscribable<ValueTypes[SingletonKey<K>]> | IDisposable {
+    if (listener) {
+      let listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
+        this.listenerSets[key];
+      if (!listenerSet) {
+        listenerSet = new Set();
+        this.listenerSets[key] = listenerSet;
+      }
+      listenerSet.add(listener);
+      return new Disposable(() => {
+        this.off(key, listener);
+      });
+    } else {
+      return listener => this.on(key, listener);
+    }
   }
 
   /**
@@ -96,7 +101,7 @@ export class Emitter<
 
   /**
    * Emits an event asynchronously.
-   * This method is similar to `emit()`, but listener functions are invoked asynchronously.
+   * This method is similar to `.emit()`, but listener functions are invoked asynchronously.
    * @param key A key string.
    * @param value A value passed to listeners.
    */

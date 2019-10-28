@@ -34,12 +34,10 @@ describe("Emitter", () => {
       emitter.emit("str", "bar");
       expect(x).toBe("foo");
     });
-  });
 
-  describe("subscription", () => {
-    it("should return a function that will attach a listener function", () => {
+    it("should also provide a curried version", () => {
       const emitter = new Emitter<Keys, VT>();
-      const onStr = emitter.subscription("str");
+      const onStr = emitter.on("str");
       let x: string | undefined = undefined;
       const listener = (str: string): void => {
         x = str;

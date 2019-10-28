@@ -1,2 +1,2 @@
 export { IDisposable, Disposable, CompositeDisposable } from "./disposable";
-export { Listener, Subscription, Emitter } from "./emitter";
+export { Listener, Subscribable, Emitter } from "./emitter";
