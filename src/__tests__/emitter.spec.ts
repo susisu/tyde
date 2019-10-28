@@ -17,6 +17,8 @@ describe("Emitter", () => {
       emitter.on("str", listener);
       emitter.emit("str", "foo");
       expect(x).toBe("foo");
+      emitter.emit("str", "bar");
+      expect(x).toBe("bar");
     });
 
     it("should return a disposable which will remove the listener function when disposed", () => {
@@ -26,9 +28,30 @@ describe("Emitter", () => {
         x = str;
       };
       const disposable = emitter.on("str", listener);
-      disposable.dispose();
       emitter.emit("str", "foo");
-      expect(x).toBe(undefined);
+      expect(x).toBe("foo");
+      disposable.dispose();
+      emitter.emit("str", "bar");
+      expect(x).toBe("foo");
+    });
+  });
+
+  describe("subscription", () => {
+    it("should return a function that will attach a listener function", () => {
+      const emitter = new Emitter<Keys, VT>();
+      const onStr = emitter.subscription("str");
+      let x: string | undefined = undefined;
+      const listener = (str: string): void => {
+        x = str;
+      };
+      const disposable = onStr(listener);
+      emitter.emit("str", "foo");
+      expect(x).toBe("foo");
+      emitter.emit("str", "bar");
+      expect(x).toBe("bar");
+      disposable.dispose();
+      emitter.emit("str", "baz");
+      expect(x).toBe("bar");
     });
   });
 
@@ -40,9 +63,11 @@ describe("Emitter", () => {
         x = str;
       };
       emitter.on("str", listener);
-      emitter.off("str", listener);
       emitter.emit("str", "foo");
-      expect(x).toBe(undefined);
+      expect(x).toBe("foo");
+      emitter.off("str", listener);
+      emitter.emit("str", "bar");
+      expect(x).toBe("foo");
     });
   });
 

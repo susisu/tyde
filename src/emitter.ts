@@ -9,7 +9,9 @@ type SingletonKey<K extends string> =
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
-type Listener<T> = (value: T) => void;
+export type Listener<T> = (value: T) => void;
+export type Subscription<T> = (listener: Listener<T>) => IDisposable;
+
 type ListenerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
   { [K in Keys]?: Set<Listener<ValueTypes[K]>> };
 
@@ -42,6 +44,18 @@ export class Emitter<
     return new Disposable(() => {
       this.off(key, listener);
     });
+  }
+
+  /**
+   * Returns a function that attaches a listener function to a key.
+   * This is a curried version of `on()`.
+   * @param key A key string.
+   * @returns A function that takes a listener function and returns a disposable.
+   */
+  subscription<K extends Keys>(
+    key: SingletonKey<K>,
+  ): (listener: Listener<ValueTypes[SingletonKey<K>]>) => IDisposable {
+    return listener => this.on(key, listener);
   }
 
   /**
