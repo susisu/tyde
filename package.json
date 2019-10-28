@@ -1,0 +1,9 @@
+{
+  "name": "@susisu/minievent",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/susisu/minievent.git",
+  "author": "Susisu <susisu2413@yahoo.co.jp>",
+  "license": "MIT",
+  "private": false
+}
