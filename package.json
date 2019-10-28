@@ -1,9 +1,26 @@
 {
   "name": "@susisu/minievent",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/susisu/minievent.git",
   "author": "Susisu <susisu2413@yahoo.co.jp>",
   "license": "MIT",
-  "private": false
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "lint": "eslint --exts .js,.ts src '*.js'",
+    "lint-fix": "eslint --fix --exts .js,.ts src '*.js'",
+    "build": "tsc --build",
+    "clean": "run-s clean:tsc clean:rm",
+    "clean:tsc": "tsc --build --clean",
+    "clean:rm": "rimraf lib"
+  },
+  "devDependencies": {
+    "@susisu/eslint-config": "^0.0.7",
+    "eslint": "^6.6.0",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.6.4"
+  }
 }
