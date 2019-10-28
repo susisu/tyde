@@ -26,5 +26,11 @@ module.exports = {
         "node": true,
       },
     },
+    {
+      "files": ["*.spec.ts"],
+      "env"  : {
+        "jest": true,
+      },
+    },
   ],
 };

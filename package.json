@@ -9,18 +9,23 @@
     "lib"
   ],
   "scripts": {
-    "lint": "eslint --exts .js,.ts src '*.js'",
-    "lint-fix": "eslint --fix --exts .js,.ts src '*.js'",
+    "lint": "eslint --ext .js,.ts src '*.js'",
+    "lint-fix": "eslint --fix --ext .js,.ts src '*.js'",
+    "test": "jest",
     "build": "tsc --build",
     "clean": "run-s clean:tsc clean:rm",
     "clean:tsc": "tsc --build --clean",
-    "clean:rm": "rimraf lib"
+    "clean:rm": "rimraf lib",
+    "prepublishOnly": "run-s clean lint test build"
   },
   "devDependencies": {
     "@susisu/eslint-config": "^0.0.7",
+    "@types/jest": "^24.0.20",
     "eslint": "^6.6.0",
+    "jest": "^24.9.0",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.0",
+    "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
   }
 }
