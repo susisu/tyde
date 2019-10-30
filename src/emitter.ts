@@ -6,6 +6,8 @@ type ElimUnionSub<T0, T1> = T0 extends T1 ? [T1] extends [T0] ? T0 : never : nev
 type SingletonKey<K extends string> =
   string extends K ? never : ElimUnion<K>;
 
+type IsUndefined<T, A, B> = [T] extends [undefined] ? undefined extends T ? A : B : B;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
@@ -86,6 +88,21 @@ export class Emitter<
    * @param value A value passed to listeners.
    */
   emit<K extends Keys>(
+    key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
+    value?: undefined,
+  ): void;
+
+  /**
+   * Emits an event.
+   * An event is a pair of a key string and a value.
+   * @param key A key string.
+   * @param value A value passed to listeners.
+   */
+  emit<K extends Keys>(
+    key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
+  ): void;
+
+  emit<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void {
     const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
@@ -105,6 +122,21 @@ export class Emitter<
    * @param key A key string.
    * @param value A value passed to listeners.
    */
+  emitAsync<K extends Keys>(
+    key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
+    value?: undefined,
+  ): Promise<void>;
+
+  /**
+   * Emits an event asynchronously.
+   * This method is similar to `.emit()`, but listener functions are invoked asynchronously.
+   * @param key A key string.
+   * @param value A value passed to listeners.
+   */
+  emitAsync<K extends Keys>(
+    key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
+  ): Promise<void>;
+
   async emitAsync<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void> {
