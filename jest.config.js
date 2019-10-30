@@ -9,7 +9,7 @@ module.exports = {
   "coverageDirectory"  : "coverage",
   "globals"            : {
     "ts-jest": {
-      "tsConfig": "./tsconfig.json",
+      "tsConfig": "./tsconfig.test.json",
     },
   },
   "transform": {

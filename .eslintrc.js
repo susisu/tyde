@@ -8,13 +8,30 @@ module.exports = {
       "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType" : "module",
-        "project"    : "./tsconfig.json",
       },
       "env": {
         "es6": true,
       },
       "rules": {
         "no-dupe-class-members": "off",
+      },
+    },
+    {
+      "files": ["*.spec.ts"],
+      "env"  : {
+        "jest": true,
+      },
+    },
+    {
+      "files"        : ["src/**/*.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.build.json",
+      },
+    },
+    {
+      "files"        : ["src/**/*.spec.ts", "src/**/__tests__/**/*.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.test.json",
       },
     },
     {
@@ -27,12 +44,6 @@ module.exports = {
       "env": {
         "es6" : true,
         "node": true,
-      },
-    },
-    {
-      "files": ["*.spec.ts"],
-      "env"  : {
-        "jest": true,
       },
     },
   ],
