@@ -48,8 +48,8 @@ type Keys = "change" | "destroy";
 
 const emitter = new Emitter<Keys>();
 
-emitter.emit("change", 42);     // ok
-emitter.emit("foo", undefined); // type error: unknown key
+emitter.emit("change", 42); // ok
+emitter.emit("foo", 42);    // type error: unknown key
 ```
 
 The second argument is a map from event keys to value types, which restricts the type of emitted value for each key.
