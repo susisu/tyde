@@ -10,7 +10,7 @@ type SingletonKey<K extends string> =
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
 export type Listener<T> = (value: T) => void;
-export type Subscribable<T> = (listener: Listener<T>) => IDisposable;
+export type Listen<T> = (listener: Listener<T>) => IDisposable;
 
 type ListenerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
   { [K in Keys]?: Set<Listener<ValueTypes[K]>> };
@@ -32,7 +32,7 @@ export class Emitter<
    */
   on<K extends Keys>(
     key: SingletonKey<K>,
-  ): Subscribable<ValueTypes[SingletonKey<K>]>;
+  ): Listen<ValueTypes[SingletonKey<K>]>;
 
   /**
    * Attaches a listener function to a key.
@@ -46,7 +46,7 @@ export class Emitter<
 
   on<K extends Keys>(
     key: SingletonKey<K>, listener?: Listener<ValueTypes[SingletonKey<K>]>,
-  ): Subscribable<ValueTypes[SingletonKey<K>]> | IDisposable {
+  ): Listen<ValueTypes[SingletonKey<K>]> | IDisposable {
     if (listener) {
       let listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
         this.listenerSets[key];
