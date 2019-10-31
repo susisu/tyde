@@ -15,9 +15,9 @@ describe("Emitter", () => {
         x = str;
       };
       emitter.on("str", listener);
-      emitter.emit("str", "foo");
+      emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
-      emitter.emit("str", "bar");
+      emitter.emitSync("str", "bar");
       expect(x).toBe("bar");
     });
 
@@ -28,10 +28,10 @@ describe("Emitter", () => {
         x = str;
       };
       const disposable = emitter.on("str", listener);
-      emitter.emit("str", "foo");
+      emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
       disposable.dispose();
-      emitter.emit("str", "bar");
+      emitter.emitSync("str", "bar");
       expect(x).toBe("foo");
     });
 
@@ -43,12 +43,12 @@ describe("Emitter", () => {
         x = str;
       };
       const disposable = onStr(listener);
-      emitter.emit("str", "foo");
+      emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
-      emitter.emit("str", "bar");
+      emitter.emitSync("str", "bar");
       expect(x).toBe("bar");
       disposable.dispose();
-      emitter.emit("str", "baz");
+      emitter.emitSync("str", "baz");
       expect(x).toBe("bar");
     });
   });
@@ -61,16 +61,16 @@ describe("Emitter", () => {
         x = str;
       };
       emitter.on("str", listener);
-      emitter.emit("str", "foo");
+      emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
       emitter.off("str", listener);
-      emitter.emit("str", "bar");
+      emitter.emitSync("str", "bar");
       expect(x).toBe("foo");
     });
   });
 
-  describe("emit", () => {
-    it("should invoke listener functions attached to a key", () => {
+  describe("emitSync", () => {
+    it("should synchronously invoke listener functions attached to a key", () => {
       const emitter = new Emitter<Keys, VT>();
       let x1: string | undefined = undefined;
       const listener1 = (str: string): void => {
@@ -82,14 +82,14 @@ describe("Emitter", () => {
       };
       emitter.on("str", listener1);
       emitter.on("str", listener2);
-      emitter.emit("str", "foo");
+      emitter.emitSync("str", "foo");
       expect(x1).toBe("foo");
       expect(x2).toBe("foo");
     });
   });
 
-  describe("emitAsync", () => {
-    it("should invoke listener functions attached to a key asynchronously", async () => {
+  describe("emit", () => {
+    it("should asynchronously invoke listener functions attached to a key", async () => {
       const emitter = new Emitter<Keys, VT>();
       let x1: string | undefined = undefined;
       const listener1 = (str: string): void => {
@@ -101,7 +101,7 @@ describe("Emitter", () => {
       };
       emitter.on("str", listener1);
       emitter.on("str", listener2);
-      const promise = emitter.emitAsync("str", "foo");
+      const promise = emitter.emit("str", "foo");
       expect(x1).toBe(undefined);
       expect(x2).toBe(undefined);
       await promise;

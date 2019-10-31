@@ -82,27 +82,25 @@ export class Emitter<
   }
 
   /**
-   * Emits an event.
-   * An event is a pair of a key string and a value.
+   * Emits an event synchronously.
    * @param key A key string.
    * @param value A value passed to listeners.
    */
-  emit<K extends Keys>(
+  emitSync<K extends Keys>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
     value?: undefined,
   ): void;
 
   /**
-   * Emits an event.
-   * An event is a pair of a key string and a value.
+   * Emits an event synchronously.
    * @param key A key string.
    * @param value A value passed to listeners.
    */
-  emit<K extends Keys>(
+  emitSync<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void;
 
-  emit<K extends Keys>(
+  emitSync<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void {
     const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
@@ -118,26 +116,24 @@ export class Emitter<
 
   /**
    * Emits an event asynchronously.
-   * This method is similar to `.emit()`, but listener functions are invoked asynchronously.
    * @param key A key string.
    * @param value A value passed to listeners.
    */
-  emitAsync<K extends Keys>(
+  emit<K extends Keys>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
     value?: undefined,
   ): Promise<void>;
 
   /**
    * Emits an event asynchronously.
-   * This method is similar to `.emit()`, but listener functions are invoked asynchronously.
    * @param key A key string.
    * @param value A value passed to listeners.
    */
-  emitAsync<K extends Keys>(
+  emit<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void>;
 
-  async emitAsync<K extends Keys>(
+  async emit<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void> {
     const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
