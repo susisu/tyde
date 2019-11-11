@@ -44,9 +44,9 @@ You can optionally pass type arguments to `Emitter` constructor to report some k
 The first argument is a union type of event keys, which restricts the types of events to be emitted.
 
 ``` typescript
-type Keys = "change" | "destroy";
+type Key = "change" | "destroy";
 
-const emitter = new Emitter<Keys>();
+const emitter = new Emitter<Key>();
 
 emitter.emit("change", 42); // ok
 emitter.emit("foo", 42);    // type error: unknown key
@@ -55,13 +55,13 @@ emitter.emit("foo", 42);    // type error: unknown key
 The second argument is a map from event keys to value types, which restricts the type of emitted value for each key.
 
 ``` typescript
-type Keys = "change" | "destroy";
+type Key = "change" | "destroy";
 type ValueTypes = {
   "change": number,
   "destroy": undefined,
 };
 
-const emitter = new Emitter<Keys, ValueTypes>();
+const emitter = new Emitter<Key, ValueTypes>();
 
 emitter.emit("change", 42);    // ok
 emitter.emit("change", "foo"); // type error: mismatched value type

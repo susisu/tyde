@@ -8,19 +8,19 @@ type SingletonKey<K extends string> = string extends K ? never : ElimUnion<K>;
 type IsUndefined<T, A, B> = [T] extends [undefined] ? undefined extends T ? A : B : B;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
+type DefaultValueTypes<Key extends string> = { [K in Key]: any };
 
 export type Handler<T> = (value: T) => void;
 export type Subscribable<T> = (handler: Handler<T>) => Unsubscribable;
 
-type HandlerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
-  { [K in Keys]?: Set<Handler<ValueTypes[K]>> };
+type HandlerSets<Key extends string, ValueTypes extends DefaultValueTypes<Key>> =
+  { [K in Key]?: Set<Handler<ValueTypes[K]>> };
 
 export class Emitter<
-  Keys extends string = string,
-  ValueTypes extends DefaultValueTypes<Keys> = DefaultValueTypes<Keys>,
+  Key extends string = string,
+  ValueTypes extends DefaultValueTypes<Key> = DefaultValueTypes<Key>,
 > {
-  private handlerSets: HandlerSets<Keys, ValueTypes>;
+  private handlerSets: HandlerSets<Key, ValueTypes>;
 
   constructor() {
     this.handlerSets = Object.create(null);
@@ -31,7 +31,7 @@ export class Emitter<
    * @param key A key string.
    * @returns A function that takes a handler function and returns a subscription.
    */
-  on<K extends Keys>(
+  on<K extends Key>(
     key: SingletonKey<K>,
   ): Subscribable<ValueTypes[SingletonKey<K>]>;
 
@@ -41,11 +41,11 @@ export class Emitter<
    * @param handler A handler function which is invoked when an event is emitted.
    * @returns A subscription object which removes the handler function when unsubscribed.
    */
-  on<K extends Keys>(
+  on<K extends Key>(
     key: SingletonKey<K>, handler: Handler<ValueTypes[SingletonKey<K>]>,
   ): Unsubscribable;
 
-  on<K extends Keys>(
+  on<K extends Key>(
     key: SingletonKey<K>, handler?: Handler<ValueTypes[SingletonKey<K>]>,
   ): Subscribable<ValueTypes[SingletonKey<K>]> | Unsubscribable {
     if (handler) {
@@ -68,7 +68,7 @@ export class Emitter<
    * @param key A key string.
    * @param handler A handler function.
    */
-  off<K extends Keys>(
+  off<K extends Key>(
     key: SingletonKey<K>, handler: Handler<ValueTypes[SingletonKey<K>]>,
   ): void {
     const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
@@ -83,7 +83,7 @@ export class Emitter<
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends Keys>(
+  emitSync<K extends Key>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
     value?: undefined,
   ): void;
@@ -93,11 +93,11 @@ export class Emitter<
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends Keys>(
+  emitSync<K extends Key>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void;
 
-  emitSync<K extends Keys>(
+  emitSync<K extends Key>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void {
     const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
@@ -115,7 +115,7 @@ export class Emitter<
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emit<K extends Keys>(
+  emit<K extends Key>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
     value?: undefined,
   ): Promise<void>;
@@ -125,11 +125,11 @@ export class Emitter<
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emit<K extends Keys>(
+  emit<K extends Key>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void>;
 
-  async emit<K extends Keys>(
+  async emit<K extends Key>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void> {
     const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
