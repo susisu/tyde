@@ -6,14 +6,14 @@ export interface Unsubscribable {
 }
 
 export class Subscription implements Unsubscribable {
-  private unsubscribed: boolean;
+  private done: boolean;
   private onUnsubscribe: (() => void) | undefined;
 
   /**
    * @param onUnsubscribe A callback function invoked when this subscription is unsubscribed.
    */
   constructor(onUnsubscribe: () => void) {
-    this.unsubscribed = false;
+    this.done = false;
     this.onUnsubscribe = onUnsubscribe;
   }
 
@@ -21,21 +21,21 @@ export class Subscription implements Unsubscribable {
    * Unsubscribes this subscription i.e. invokes `onUnsubscribe` callback function.
    */
   unsubscribe(): void {
-    if (this.unsubscribed || typeof this.onUnsubscribe !== "function") {
+    if (this.done || typeof this.onUnsubscribe !== "function") {
       return;
     }
-    this.unsubscribed = true;
+    this.done = true;
     this.onUnsubscribe.call(undefined);
     this.onUnsubscribe = undefined;
   }
 }
 
 export class CompositeSubscription implements Unsubscribable {
-  private unsubscribed: boolean;
+  private done: boolean;
   private subscriptions: Set<Unsubscribable>;
 
   constructor() {
-    this.unsubscribed = false;
+    this.done = false;
     this.subscriptions = new Set();
   }
 
@@ -45,7 +45,7 @@ export class CompositeSubscription implements Unsubscribable {
    * @param subscription A subscription object.
    */
   add(subscription: Unsubscribable): void{
-    if (this.unsubscribed) {
+    if (this.done) {
       return;
     }
     this.subscriptions.add(subscription);
@@ -56,7 +56,7 @@ export class CompositeSubscription implements Unsubscribable {
    * @param subscription A subscription object.
    */
   remove(subscription: Unsubscribable): void {
-    if (this.unsubscribed) {
+    if (this.done) {
       return;
     }
     this.subscriptions.delete(subscription);
@@ -66,7 +66,7 @@ export class CompositeSubscription implements Unsubscribable {
    * Clears the set of subscriptions.
    */
   clear(): void {
-    if (this.unsubscribed) {
+    if (this.done) {
       return;
     }
     this.subscriptions.clear();
@@ -76,10 +76,10 @@ export class CompositeSubscription implements Unsubscribable {
    * Unsubscribes all the subscriptions in the set.
    */
   unsubscribe(): void {
-    if (this.unsubscribed) {
+    if (this.done) {
       return;
     }
-    this.unsubscribed = true;
+    this.done = true;
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
