@@ -11,7 +11,7 @@ yarn add @susisu/tyde
 ## Usage
 tyde provides APIs similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit).
 
-The simplest usage is subscribing events with `.on()` and emitting events with `.emit()`.
+The simplest usage is subscribing an event with `.on()` and emitting events with `.emit()`.
 
 ``` typescript
 import { Emitter } from "@susisu/tyde";

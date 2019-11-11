@@ -3,88 +3,85 @@ import { Unsubscribable, Subscription } from "./subscription";
 type ElimUnion<T> = ElimUnionSub<T, T>;
 type ElimUnionSub<T0, T1> = T0 extends T1 ? [T1] extends [T0] ? T0 : never : never;
 
-type SingletonKey<K extends string> =
-  string extends K ? never : ElimUnion<K>;
+type SingletonKey<K extends string> = string extends K ? never : ElimUnion<K>;
 
 type IsUndefined<T, A, B> = [T] extends [undefined] ? undefined extends T ? A : B : B;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
-export type Listener<T> = (value: T) => void;
-export type Listen<T> = (listener: Listener<T>) => Unsubscribable;
+export type Handler<T> = (value: T) => void;
+export type Subscribable<T> = (handler: Handler<T>) => Unsubscribable;
 
-type ListenerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
-  { [K in Keys]?: Set<Listener<ValueTypes[K]>> };
+type HandlerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
+  { [K in Keys]?: Set<Handler<ValueTypes[K]>> };
 
 export class Emitter<
   Keys extends string = string,
   ValueTypes extends DefaultValueTypes<Keys> = DefaultValueTypes<Keys>,
 > {
-  private listenerSets: ListenerSets<Keys, ValueTypes>;
+  private handlerSets: HandlerSets<Keys, ValueTypes>;
 
   constructor() {
-    this.listenerSets = Object.create(null);
+    this.handlerSets = Object.create(null);
   }
 
   /**
-   * Attaches a listener function to a key.
+   * Attaches a handler function to a key.
    * @param key A key string.
-   * @returns A function that takes a listener function and returns a subscription.
+   * @returns A function that takes a handler function and returns a subscription.
    */
   on<K extends Keys>(
     key: SingletonKey<K>,
-  ): Listen<ValueTypes[SingletonKey<K>]>;
+  ): Subscribable<ValueTypes[SingletonKey<K>]>;
 
   /**
-   * Attaches a listener function to a key.
+   * Attaches a handler function to a key.
    * @param key A key string.
-   * @param listener A listener function which is invoked when an event is emitted.
-   * @returns A subscription object which removes the listener function when unsubscribed.
+   * @param handler A handler function which is invoked when an event is emitted.
+   * @returns A subscription object which removes the handler function when unsubscribed.
    */
   on<K extends Keys>(
-    key: SingletonKey<K>, listener: Listener<ValueTypes[SingletonKey<K>]>,
+    key: SingletonKey<K>, handler: Handler<ValueTypes[SingletonKey<K>]>,
   ): Unsubscribable;
 
   on<K extends Keys>(
-    key: SingletonKey<K>, listener?: Listener<ValueTypes[SingletonKey<K>]>,
-  ): Listen<ValueTypes[SingletonKey<K>]> | Unsubscribable {
-    if (listener) {
-      let listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
-        this.listenerSets[key];
-      if (!listenerSet) {
-        listenerSet = new Set();
-        this.listenerSets[key] = listenerSet;
+    key: SingletonKey<K>, handler?: Handler<ValueTypes[SingletonKey<K>]>,
+  ): Subscribable<ValueTypes[SingletonKey<K>]> | Unsubscribable {
+    if (handler) {
+      let handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+      if (!handlerSet) {
+        handlerSet = new Set();
+        this.handlerSets[key] = handlerSet;
       }
-      listenerSet.add(listener);
+      handlerSet.add(handler);
       return new Subscription(() => {
-        this.off(key, listener);
+        this.off(key, handler);
       });
     } else {
-      return listener => this.on(key, listener);
+      return handler => this.on(key, handler);
     }
   }
 
   /**
-   * Removes a listener function from a key.
+   * Removes a handler function from a key.
    * @param key A key string.
-   * @param listener A listener function.
+   * @param handler A handler function.
    */
   off<K extends Keys>(
-    key: SingletonKey<K>, listener: Listener<ValueTypes[SingletonKey<K>]>,
+    key: SingletonKey<K>, handler: Handler<ValueTypes[SingletonKey<K>]>,
   ): void {
-    const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
-      this.listenerSets[key];
-    if (!listenerSet) {
+    const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+    if (!handlerSet) {
       return;
     }
-    listenerSet.delete(listener);
+    handlerSet.delete(handler);
   }
 
   /**
    * Emits an event synchronously.
    * @param key A key string.
-   * @param value A value passed to listeners.
+   * @param value A value passed to handlers.
    */
   emitSync<K extends Keys>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
@@ -94,7 +91,7 @@ export class Emitter<
   /**
    * Emits an event synchronously.
    * @param key A key string.
-   * @param value A value passed to listeners.
+   * @param value A value passed to handlers.
    */
   emitSync<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
@@ -103,21 +100,20 @@ export class Emitter<
   emitSync<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): void {
-    const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
-      this.listenerSets[key];
-    if (!listenerSet) {
+    const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+    if (!handlerSet) {
       return;
     }
-    const copySet = new Set(listenerSet);
-    for (const listener of copySet) {
-      listener(value);
+    const copyHandlerSet = new Set(handlerSet);
+    for (const handler of copyHandlerSet) {
+      handler(value);
     }
   }
 
   /**
    * Emits an event asynchronously.
    * @param key A key string.
-   * @param value A value passed to listeners.
+   * @param value A value passed to handlers.
    */
   emit<K extends Keys>(
     key: IsUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
@@ -127,7 +123,7 @@ export class Emitter<
   /**
    * Emits an event asynchronously.
    * @param key A key string.
-   * @param value A value passed to listeners.
+   * @param value A value passed to handlers.
    */
   emit<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
@@ -136,14 +132,13 @@ export class Emitter<
   async emit<K extends Keys>(
     key: SingletonKey<K>, value: ValueTypes[SingletonKey<K>],
   ): Promise<void> {
-    const listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
-      this.listenerSets[key];
-    if (!listenerSet) {
+    const handlerSet: Set<Handler<ValueTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+    if (!handlerSet) {
       return;
     }
-    const promises = [...listenerSet].map(listener =>
+    const promises = [...handlerSet].map(handler =>
       Promise.resolve().then(() => {
-        listener(value);
+        handler(value);
       }),
     );
     await Promise.all(promises);
