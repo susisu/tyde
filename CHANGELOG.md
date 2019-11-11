@@ -1,4 +1,4 @@
-## 0.2.0 (yyyy-mm-dd)
+## 0.2.0 (2019-11-11)
 ### Breaking changes
 - Rename APIs
   - `Emitter#emit()` and `#emitAsync()` are renamed to `#emitSync()` and `#emit()`
