@@ -1,4 +1,4 @@
-import { IDisposable, Disposable } from "./disposable";
+import { Unsubscribable, Subscription } from "./subscription";
 
 type ElimUnion<T> = ElimUnionSub<T, T>;
 type ElimUnionSub<T0, T1> = T0 extends T1 ? [T1] extends [T0] ? T0 : never : never;
@@ -12,7 +12,7 @@ type IsUndefined<T, A, B> = [T] extends [undefined] ? undefined extends T ? A : 
 type DefaultValueTypes<Keys extends string> = { [K in Keys]: any };
 
 export type Listener<T> = (value: T) => void;
-export type Listen<T> = (listener: Listener<T>) => IDisposable;
+export type Listen<T> = (listener: Listener<T>) => Unsubscribable;
 
 type ListenerSets<Keys extends string, ValueTypes extends DefaultValueTypes<Keys>> =
   { [K in Keys]?: Set<Listener<ValueTypes[K]>> };
@@ -30,7 +30,7 @@ export class Emitter<
   /**
    * Attaches a listener function to a key.
    * @param key A key string.
-   * @returns A function that takes a listener function and returns a disposable.
+   * @returns A function that takes a listener function and returns a subscription.
    */
   on<K extends Keys>(
     key: SingletonKey<K>,
@@ -40,15 +40,15 @@ export class Emitter<
    * Attaches a listener function to a key.
    * @param key A key string.
    * @param listener A listener function which is invoked when an event is emitted.
-   * @returns A disposable object which removes the listener function when disposed.
+   * @returns A subscription object which removes the listener function when unsubscribed.
    */
   on<K extends Keys>(
     key: SingletonKey<K>, listener: Listener<ValueTypes[SingletonKey<K>]>,
-  ): IDisposable;
+  ): Unsubscribable;
 
   on<K extends Keys>(
     key: SingletonKey<K>, listener?: Listener<ValueTypes[SingletonKey<K>]>,
-  ): Listen<ValueTypes[SingletonKey<K>]> | IDisposable {
+  ): Listen<ValueTypes[SingletonKey<K>]> | Unsubscribable {
     if (listener) {
       let listenerSet: Set<Listener<ValueTypes[SingletonKey<K>]>> | undefined =
         this.listenerSets[key];
@@ -57,7 +57,7 @@ export class Emitter<
         this.listenerSets[key] = listenerSet;
       }
       listenerSet.add(listener);
-      return new Disposable(() => {
+      return new Subscription(() => {
         this.off(key, listener);
       });
     } else {

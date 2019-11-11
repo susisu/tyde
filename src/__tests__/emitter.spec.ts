@@ -21,16 +21,16 @@ describe("Emitter", () => {
       expect(x).toBe("bar");
     });
 
-    it("should return a disposable which will remove the listener function when disposed", () => {
+    it("should return a subscription which will remove the listener when unsubscribed", () => {
       const emitter = new Emitter<Keys, VT>();
       let x: string | undefined = undefined;
       const listener = (str: string): void => {
         x = str;
       };
-      const disposable = emitter.on("str", listener);
+      const subscription = emitter.on("str", listener);
       emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
-      disposable.dispose();
+      subscription.unsubscribe();
       emitter.emitSync("str", "bar");
       expect(x).toBe("foo");
     });
@@ -42,12 +42,12 @@ describe("Emitter", () => {
       const listener = (str: string): void => {
         x = str;
       };
-      const disposable = onStr(listener);
+      const subscription = onStr(listener);
       emitter.emitSync("str", "foo");
       expect(x).toBe("foo");
       emitter.emitSync("str", "bar");
       expect(x).toBe("bar");
-      disposable.dispose();
+      subscription.unsubscribe();
       emitter.emitSync("str", "baz");
       expect(x).toBe("bar");
     });

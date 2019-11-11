@@ -25,10 +25,10 @@ const subscription = emitter.on("change", value => {
 emitter.emit("change", 42); // -> 42
 ```
 
-Subscriptions are disposable, that is, it can be removed by calling `.dispose()`.
+Subscription can be unsubscribed by calling `.unsubscribe()`.
 
 ``` typescript
-subscription.dispose();
+subscription.unsubscribe();
 emitter.emit("change", 0); // no output
 ```
 
