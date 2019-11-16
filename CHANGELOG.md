@@ -1,4 +1,4 @@
-## 0.2.1 (yyyy-mm-dd)
+## 0.2.1 (2019-11-16)
 ### Features
 - Allow omitting emitted value when value type is `void`
 
