@@ -5,10 +5,6 @@ type ElimUnionSub<T0, T1> = T0 extends T1 ? [T1] extends [T0] ? T0 : never : nev
 
 type SingletonKey<K extends string> = string extends K ? never : ElimUnion<K>;
 
-type IfEqual<T, U, A, B> = [T] extends [U] ? ([U] extends [T] ? A : B) : B;
-type IfUndefined<T, A, B> = IfEqual<T, undefined, A, B>;
-type IfVoid<T, A, B> = IfEqual<T, void, A, B>;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultValueTypes<Key extends string> = { [K in Key]: any };
 
@@ -86,18 +82,8 @@ export class Emitter<
    * @param value A value passed to handlers.
    */
   emitSync<K extends Key>(
-    key: IfUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
-    value?: undefined,
-  ): void;
-
-  /**
-   * Emits an event synchronously.
-   * @param key A key string.
-   * @param value A value passed to handlers.
-   */
-  emitSync<K extends Key>(
-    key: IfVoid<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
-    value?: void,
+    key: undefined extends ValueTypes[SingletonKey<K>] ? SingletonKey<K> : never,
+    value?: ValueTypes[SingletonKey<K>],
   ): void;
 
   /**
@@ -128,18 +114,8 @@ export class Emitter<
    * @param value A value passed to handlers.
    */
   emit<K extends Key>(
-    key: IfUndefined<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
-    value?: undefined,
-  ): Promise<void>;
-
-  /**
-   * Emits an event asynchronously.
-   * @param key A key string.
-   * @param value A value passed to handlers.
-   */
-  emit<K extends Key>(
-    key: IfVoid<ValueTypes[SingletonKey<K>], SingletonKey<K>, never>,
-    value?: void,
+    key: undefined extends ValueTypes[SingletonKey<K>] ? SingletonKey<K> : never,
+    value?: ValueTypes[SingletonKey<K>],
   ): Promise<void>;
 
   /**
