@@ -1,3 +1,7 @@
+## 0.2.2 (2019-11-16)
+### Features
+- Allow more types (e.g. `number | undefined`) to be omitted from `#emit()` and `#emitSync()`
+
 ## 0.2.1 (2019-11-16)
 ### Features
 - Allow omitting emitted value when value type is `void`
