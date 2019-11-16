@@ -58,7 +58,7 @@ The second argument is a map from event keys to value types, which restricts the
 type Key = "change" | "destroy";
 type ValueTypes = {
   "change": number,
-  "destroy": undefined,
+  "destroy": void,
 };
 
 const emitter = new Emitter<Key, ValueTypes>();

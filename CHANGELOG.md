@@ -1,3 +1,7 @@
+## 0.2.1 (yyyy-mm-dd)
+### Features
+- Allow omitting emitted value when value type is `void`
+
 ## 0.2.0 (2019-11-11)
 ### Breaking changes
 - Rename APIs
