@@ -67,6 +67,13 @@ emitter.emit("change", 42);    // ok
 emitter.emit("change", "foo"); // type error: mismatched value type
 ```
 
+## Difference from other event emitters
+- No wildcards, because of the strongly typed interface.
+- Events are emitted asynchronously by default.
+  - There is also a synchronous version `.emitSync()`, but it is not always recommended.
+- Invocation order of event handlers is not guaranteed in any way.
+  - If you need it, invoke multiple functions in one event handler with explicit order, or separate an event into multiple stages.
+
 ## License
 [MIT License](http://opensource.org/licenses/mit-license.php)
 
