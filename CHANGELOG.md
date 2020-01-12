@@ -1,3 +1,8 @@
+## 0.3.0 (2020-01-12)
+### Breaking changes
+- `Emitter` now takes only one type argument `EventTypes`, which maps event keys to types of emitted values.
+  - This was the second type argument in the previous version.
+
 ## 0.2.2 (2019-11-16)
 ### Features
 - Allow more types (e.g. `number | undefined`) to be omitted from `#emit()` and `#emitSync()`
