@@ -39,40 +39,31 @@ const onChange = emitter.on("change");
 const subscription = onChange(value => { /* ... */ });
 ```
 
-You can optionally pass type arguments to `Emitter` constructor to report some kind of errors.
-
-The first argument is a union type of event keys, which restricts the types of events to be emitted.
+You can optionally restrict event types by giving a type argument to `Emitter`.
 
 ``` typescript
-type Key = "change" | "destroy";
-
-const emitter = new Emitter<Key>();
-
-emitter.emit("change", 42); // ok
-emitter.emit("foo", 42);    // type error: unknown key
-```
-
-The second argument is a map from event keys to value types, which restricts the type of emitted value for each key.
-
-``` typescript
-type Key = "change" | "destroy";
-type ValueTypes = {
+type EventTypes = {
   "change": number,
   "destroy": void,
 };
 
-const emitter = new Emitter<Key, ValueTypes>();
+const emitter = new Emitter<EventTypes>();
 
-emitter.emit("change", 42);    // ok
-emitter.emit("change", "foo"); // type error: mismatched value type
+emitter.emit("change", 42);     // ok
+emitter.emit("foo", 42);        // type error: unknown event
+emitter.emit("change", "test"); // type error: mismatched value type
 ```
 
 ## Difference from other event emitters
+By design, tyde has some difference from other event emitter libraries:
+
 - No wildcards, because of the strongly typed interface.
 - Events are emitted asynchronously by default.
+  - Usually event handlers should not care whether it is called synchronously or asynchronously.
   - There is also a synchronous version `.emitSync()`, but it is not always recommended.
 - Invocation order of event handlers is not guaranteed in any way.
-  - If you need it, invoke multiple functions in one event handler with explicit order, or separate an event into multiple stages.
+  - Specifying execution order in a less explicit way will lower the readability of code.
+  - If you still want one, invoke multiple functions in one event handler, or separate the event into multiple stages.
 
 ## License
 [MIT License](http://opensource.org/licenses/mit-license.php)
