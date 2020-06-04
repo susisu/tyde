@@ -29,6 +29,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
   private handlerSets: HandlerSets<EventTypes>;
 
   constructor() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.handlerSets = Object.create(null);
   }
 
