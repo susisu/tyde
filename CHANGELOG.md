@@ -1,3 +1,7 @@
+## 0.3.1 (2020-06-04)
+- Improve types of `emit` / `emitSync`
+  - This change made `Emitter<T>` covariant wrt `T`.
+
 ## 0.3.0 (2020-01-12)
 ### Breaking changes
 - `Emitter` now takes only one type argument `EventTypes`, which maps event keys to types of emitted values.
