@@ -1,5 +1,5 @@
 # @susisu/tyde
-A library for implementing simple event subscription APIs.
+Typed event emitter
 
 ## Installation
 ``` shell
@@ -9,9 +9,9 @@ yarn add @susisu/tyde
 ```
 
 ## Usage
-tyde provides APIs similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit).
+tyde provides API that is similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit).
 
-The simplest usage is subscribing an event with `.on()` and emitting events with `.emit()`.
+The simplest usage is subscribing events with `.on()` and emitting events with `.emit()`.
 
 ``` typescript
 import { Emitter } from "@susisu/tyde";
@@ -25,33 +25,32 @@ const subscription = emitter.on("change", value => {
 emitter.emit("change", 42); // -> 42
 ```
 
-Subscription can be unsubscribed by calling `.unsubscribe()`.
+Subscriptions can be unsubscribed by calling `.unsubscribe()`.
 
 ``` typescript
 subscription.unsubscribe();
 emitter.emit("change", 0); // no output
 ```
 
-A curried version of `.on()` is also available.
+The curried version of `.on()` is also available.
 
 ``` typescript
 const onChange = emitter.on("change");
 const subscription = onChange(value => { /* ... */ });
 ```
 
-You can optionally restrict event types by giving a type argument to `Emitter`.
+You can optionally restrict types of emitted values by giving a dictionary to `Emitter`'s type parameter.
 
 ``` typescript
-type EventTypes = {
+const emitter = new Emitter<{
   "change": number,
   "destroy": void,
-};
-
-const emitter = new Emitter<EventTypes>();
+}>();
 
 emitter.emit("change", 42);     // ok
+emitter.emit("destroy");        // ok
 emitter.emit("foo", 42);        // type error: unknown event
-emitter.emit("change", "test"); // type error: mismatched value type
+emitter.emit("change", "test"); // type error: mismatched type
 ```
 
 ## Difference from other event emitters
