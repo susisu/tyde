@@ -21,6 +21,10 @@ type HandlerSets<EventTypes extends object> = {
   [K in keyof EventTypes]?: Set<Handler<EventTypes[K]>>
 };
 
+type ValueOmittableKeyOf<EventTypes extends object> = {
+  [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never
+}[keyof EventTypes];
+
 export class Emitter<EventTypes extends object = DefaultEventTypes> {
   private handlerSets: HandlerSets<EventTypes>;
 
@@ -85,9 +89,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends keyof EventTypes>(
-    key: undefined extends EventTypes[SingletonKey<K>] ? SingletonKey<K> : never,
-    value?: EventTypes[SingletonKey<K>],
+  emitSync<K extends ValueOmittableKeyOf<EventTypes>>(
+    key: SingletonKey<K>, value?: EventTypes[SingletonKey<K>],
   ): void;
 
   /**
@@ -117,9 +120,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emit<K extends keyof EventTypes>(
-    key: undefined extends EventTypes[SingletonKey<K>] ? SingletonKey<K> : never,
-    value?: EventTypes[SingletonKey<K>],
+  emit<K extends ValueOmittableKeyOf<EventTypes>>(
+    key: SingletonKey<K>, value?: EventTypes[SingletonKey<K>],
   ): Promise<void>;
 
   /**
