@@ -1,23 +1,7 @@
 import { Unsubscribable, Subscription } from "./subscription";
 
-type ElimUnion<T> = ElimUnionSub<T, T>;
-type ElimUnionSub<T0, T1> = T0 extends T1 ? ([T1] extends [T0] ? T0 : never) : never;
-
-type AnyKey = string | number | symbol;
-
-type SingletonKey<K extends AnyKey> = string extends K
-  ? never
-  : number extends K
-  ? never
-  : symbol extends K
-  ? never
-  : ElimUnion<K>;
-
 export type Handler<T> = (value: T) => void;
 export type Subscribable<T> = (handler: Handler<T>) => Unsubscribable;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultEventTypes = { [K in AnyKey]: any };
 
 type HandlerSets<EventTypes extends object> = {
   [K in keyof EventTypes]?: Set<Handler<EventTypes[K]>>;
@@ -26,6 +10,22 @@ type HandlerSets<EventTypes extends object> = {
 type ValueOmittableKeyOf<EventTypes extends object> = {
   [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never;
 }[keyof EventTypes];
+
+type AnyKey = string | number | symbol;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DefaultEventTypes = { [K in AnyKey]: any };
+
+type ElimUnion<T> = ElimUnionSub<T, T>;
+type ElimUnionSub<T0, T1> = T0 extends T1 ? ([T1] extends [T0] ? T0 : never) : never;
+
+type SingletonKey<K extends AnyKey> = string extends K
+  ? never
+  : number extends K
+  ? never
+  : symbol extends K
+  ? never
+  : ElimUnion<K>;
 
 export class Emitter<EventTypes extends object = DefaultEventTypes> {
   private handlerSets: HandlerSets<EventTypes>;
