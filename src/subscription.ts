@@ -44,7 +44,7 @@ export class CompositeSubscription implements Unsubscribable {
    * object is unsubscribed.
    * @param subscription A subscription object.
    */
-  add(subscription: Unsubscribable): void{
+  add(subscription: Unsubscribable): void {
     if (this.done) {
       return;
     }

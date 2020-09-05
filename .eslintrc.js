@@ -1,49 +1,54 @@
 "use strict";
 
 module.exports = {
-  "overrides": [
+  plugins: ["prettier", "jest", "jest-formatting"],
+  overrides: [
     {
-      "files"        : ["*.ts"],
-      "extends"      : ["@susisu/eslint-config/preset/ts-types"],
-      "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType" : "module",
+      files: ["*.ts"],
+      extends: [
+        "@susisu/eslint-config/preset/ts-types",
+        "prettier",
+        "plugin:eslint-comments/recommended",
+        "prettier/@typescript-eslint",
+      ],
+      parserOptions: {
+        ecmaVersion: 2019,
+        sourceType: "module",
+        project: "./tsconfig.json",
       },
-      "env": {
-        "es6": true,
+      env: {
+        es6: true,
       },
-      "rules": {
-        "no-dupe-class-members": "off",
+      rules: {
+        "prettier/prettier": "error",
+        "eslint-comments/no-unused-disable": "error",
       },
     },
     {
-      "files": ["*.spec.ts"],
-      "env"  : {
-        "jest": true,
+      files: ["*.spec.ts"],
+      extends: ["plugin:jest/recommended", "plugin:jest-formatting/recommended"],
+      env: {
+        "jest/globals": true,
       },
     },
     {
-      "files"        : ["src/**/*.ts"],
-      "parserOptions": {
-        "project": "./tsconfig.build.json",
+      files: ["*.js"],
+      extends: [
+        "@susisu/eslint-config/preset/es",
+        "prettier",
+        "plugin:eslint-comments/recommended",
+      ],
+      parserOptions: {
+        ecmaVersion: 2019,
+        sourceType: "script",
       },
-    },
-    {
-      "files"        : ["src/**/*.spec.ts", "src/**/__tests__/**/*.ts"],
-      "parserOptions": {
-        "project": "./tsconfig.test.json",
+      env: {
+        es6: true,
+        node: true,
       },
-    },
-    {
-      "files"        : ["*.js"],
-      "extends"      : ["@susisu/eslint-config/preset/es"],
-      "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType" : "script",
-      },
-      "env": {
-        "es6" : true,
-        "node": true,
+      rules: {
+        "prettier/prettier": "error",
+        "eslint-comments/no-unused-disable": "error",
       },
     },
   ],

@@ -1,8 +1,8 @@
 import { Emitter } from "../emitter";
 
 type EventTypes = {
-  "str": string,
-  "num": number,
+  str: string;
+  num: number;
 };
 
 describe("Emitter", () => {

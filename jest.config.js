@@ -1,18 +1,18 @@
 "use strict";
 
 module.exports = {
-  "roots"              : ["./src"],
-  "testMatch"          : ["**/__tests__/**/*.spec.ts"],
-  "testEnvironment"    : "node",
-  "collectCoverage"    : true,
-  "collectCoverageFrom": ["./src/**/*.ts", "!./src/**/*.spec.ts"],
-  "coverageDirectory"  : "coverage",
-  "globals"            : {
+  roots: ["./src"],
+  testMatch: ["**/__tests__/**/*.spec.ts"],
+  testEnvironment: "node",
+  collectCoverage: true,
+  collectCoverageFrom: ["./src/**/*.ts", "!./src/**/*.spec.ts"],
+  coverageDirectory: "coverage",
+  globals: {
     "ts-jest": {
-      "tsConfig": "./tsconfig.test.json",
+      tsConfig: "./tsconfig.test.json",
     },
   },
-  "transform": {
+  transform: {
     "\\.ts$": "ts-jest",
   },
 };
