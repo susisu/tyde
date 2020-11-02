@@ -11,21 +11,16 @@ type ValueOmittableKeyOf<EventTypes extends object> = {
   [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never;
 }[keyof EventTypes];
 
+type UnionToIntersection<U> = (U extends unknown ? (x: U) => unknown : never) extends (
+  x: infer I
+) => unknown
+  ? I
+  : never;
+
 type AnyKey = string | number | symbol;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultEventTypes = { [K in AnyKey]: any };
-
-type ElimUnion<T> = ElimUnionSub<T, T>;
-type ElimUnionSub<T0, T1> = T0 extends T1 ? ([T1] extends [T0] ? T0 : never) : never;
-
-type SingletonKey<K extends AnyKey> = string extends K
-  ? never
-  : number extends K
-  ? never
-  : symbol extends K
-  ? never
-  : ElimUnion<K>;
 
 export class Emitter<EventTypes extends object = DefaultEventTypes> {
   private handlerSets: HandlerSets<EventTypes>;
@@ -40,7 +35,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @returns A function that takes a handler function and returns a subscription.
    */
-  on<K extends keyof EventTypes>(key: SingletonKey<K>): Subscribable<EventTypes[SingletonKey<K>]>;
+  on<K extends keyof EventTypes>(key: K): Subscribable<EventTypes[K]>;
 
   /**
    * Attaches a handler function to a key.
@@ -48,17 +43,14 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param handler A handler function which is invoked when an event is emitted.
    * @returns A subscription object which removes the handler function when unsubscribed.
    */
-  on<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    handler: Handler<EventTypes[SingletonKey<K>]>
-  ): Unsubscribable;
+  on<K extends keyof EventTypes>(key: K, handler: Handler<EventTypes[K]>): Unsubscribable;
 
   on<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    handler?: Handler<EventTypes[SingletonKey<K>]>
-  ): Subscribable<EventTypes[SingletonKey<K>]> | Unsubscribable {
+    key: K,
+    handler?: Handler<EventTypes[K]>
+  ): Subscribable<EventTypes[K]> | Unsubscribable {
     if (handler) {
-      let handlerSet: Set<Handler<EventTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+      let handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
       if (!handlerSet) {
         handlerSet = new Set();
         this.handlerSets[key] = handlerSet;
@@ -77,11 +69,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param handler A handler function.
    */
-  off<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    handler: Handler<EventTypes[SingletonKey<K>]>
-  ): void {
-    const handlerSet: Set<Handler<EventTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+  off<K extends keyof EventTypes>(key: K, handler: Handler<EventTypes[K]>): void {
+    const handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
     if (!handlerSet) {
       return;
     }
@@ -94,8 +83,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param value A value passed to handlers.
    */
   emitSync<K extends ValueOmittableKeyOf<EventTypes>>(
-    key: SingletonKey<K>,
-    value?: EventTypes[SingletonKey<K>]
+    key: K,
+    value?: UnionToIntersection<EventTypes[K]>
   ): void;
 
   /**
@@ -103,22 +92,17 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    value: EventTypes[SingletonKey<K>]
-  ): void;
+  emitSync<K extends keyof EventTypes>(key: K, value: UnionToIntersection<EventTypes[K]>): void;
 
-  emitSync<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    value: EventTypes[SingletonKey<K>]
-  ): void {
-    const handlerSet: Set<Handler<EventTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+  emitSync<K extends keyof EventTypes>(key: K, value: UnionToIntersection<EventTypes[K]>): void {
+    const handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
     if (!handlerSet) {
       return;
     }
     const copyHandlerSet = new Set(handlerSet);
     for (const handler of copyHandlerSet) {
-      handler(value);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- it's safe
+      handler(value as any);
     }
   }
 
@@ -128,8 +112,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param value A value passed to handlers.
    */
   emit<K extends ValueOmittableKeyOf<EventTypes>>(
-    key: SingletonKey<K>,
-    value?: EventTypes[SingletonKey<K>]
+    key: K,
+    value?: UnionToIntersection<EventTypes[K]>
   ): Promise<void>;
 
   /**
@@ -138,21 +122,22 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param value A value passed to handlers.
    */
   emit<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    value: EventTypes[SingletonKey<K>]
+    key: K,
+    value: UnionToIntersection<EventTypes[K]>
   ): Promise<void>;
 
   async emit<K extends keyof EventTypes>(
-    key: SingletonKey<K>,
-    value: EventTypes[SingletonKey<K>]
+    key: K,
+    value: UnionToIntersection<EventTypes[K]>
   ): Promise<void> {
-    const handlerSet: Set<Handler<EventTypes[SingletonKey<K>]>> | undefined = this.handlerSets[key];
+    const handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
     if (!handlerSet) {
       return;
     }
     const promises = [...handlerSet].map(handler =>
       Promise.resolve().then(() => {
-        handler(value);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- it's safe
+        handler(value as any);
       })
     );
     await Promise.all(promises);
