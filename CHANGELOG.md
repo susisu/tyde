@@ -1,3 +1,7 @@
+## 0.3.2 (2020-11-02)
+- Improve typings
+  - Now `Emitter` can take union `key`s like `"foo" | "bar"`.
+
 ## 0.3.1 (2020-06-04)
 - Improve types of `emit` / `emitSync`
   - This change made `Emitter<T>` covariant wrt `T`.
