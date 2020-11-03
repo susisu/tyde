@@ -1,6 +1,12 @@
 import { Unsubscribable, Subscription } from "./subscription";
 
+type AnyKey = string | number | symbol;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DefaultEventTypes = { [K in AnyKey]: any };
+
 export type Handler<T> = (value: T) => void;
+
 export type Subscribable<T> = (handler: Handler<T>) => Unsubscribable;
 
 type HandlerSets<EventTypes extends object> = {
@@ -11,16 +17,11 @@ type ValueOmittableKeyOf<EventTypes extends object> = {
   [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never;
 }[keyof EventTypes];
 
-type UnionToIntersection<U> = [U] extends [never]
-  ? never
-  : (U extends unknown ? (x: U) => unknown : never) extends (x: infer I) => unknown
+type Value<EventTypes extends object, K extends keyof EventTypes> = (
+  K extends unknown ? (x: EventTypes[K]) => unknown : never
+) extends (x: infer I) => unknown
   ? I
   : never;
-
-type AnyKey = string | number | symbol;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultEventTypes = { [K in AnyKey]: any };
 
 export class Emitter<EventTypes extends object = DefaultEventTypes> {
   private handlerSets: HandlerSets<EventTypes>;
@@ -82,26 +83,22 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends ValueOmittableKeyOf<EventTypes>>(
-    key: K,
-    value?: UnionToIntersection<EventTypes[K]>
-  ): void;
+  emitSync<K extends ValueOmittableKeyOf<EventTypes>>(key: K, value?: Value<EventTypes, K>): void;
 
   /**
    * Emits an event synchronously.
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emitSync<K extends keyof EventTypes>(key: K, value: UnionToIntersection<EventTypes[K]>): void;
+  emitSync<K extends keyof EventTypes>(key: K, value: Value<EventTypes, K>): void;
 
-  emitSync<K extends keyof EventTypes>(key: K, value: UnionToIntersection<EventTypes[K]>): void {
+  emitSync<K extends keyof EventTypes>(key: K, value: Value<EventTypes, K>): void {
     const handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
     if (!handlerSet) {
       return;
     }
     const copyHandlerSet = new Set(handlerSet);
     for (const handler of copyHandlerSet) {
-      // forall X. UnionToIntersection<X> <: X
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handler(value as any);
     }
@@ -114,7 +111,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    */
   emit<K extends ValueOmittableKeyOf<EventTypes>>(
     key: K,
-    value?: UnionToIntersection<EventTypes[K]>
+    value?: Value<EventTypes, K>
   ): Promise<void>;
 
   /**
@@ -122,22 +119,15 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    * @param key A key string.
    * @param value A value passed to handlers.
    */
-  emit<K extends keyof EventTypes>(
-    key: K,
-    value: UnionToIntersection<EventTypes[K]>
-  ): Promise<void>;
+  emit<K extends keyof EventTypes>(key: K, value: Value<EventTypes, K>): Promise<void>;
 
-  async emit<K extends keyof EventTypes>(
-    key: K,
-    value: UnionToIntersection<EventTypes[K]>
-  ): Promise<void> {
+  async emit<K extends keyof EventTypes>(key: K, value: Value<EventTypes, K>): Promise<void> {
     const handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
     if (!handlerSet) {
       return;
     }
     const promises = [...handlerSet].map(handler =>
       Promise.resolve().then(() => {
-        // forall X. UnionToIntersection<X> <: X
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         handler(value as any);
       })
