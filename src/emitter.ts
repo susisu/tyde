@@ -11,9 +11,9 @@ type ValueOmittableKeyOf<EventTypes extends object> = {
   [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never;
 }[keyof EventTypes];
 
-type UnionToIntersection<U> = (U extends unknown ? (x: U) => unknown : never) extends (
-  x: infer I
-) => unknown
+type UnionToIntersection<U> = [U] extends [never]
+  ? never
+  : (U extends unknown ? (x: U) => unknown : never) extends (x: infer I) => unknown
   ? I
   : never;
 
@@ -101,7 +101,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const copyHandlerSet = new Set(handlerSet);
     for (const handler of copyHandlerSet) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- it's safe
+      // forall X. UnionToIntersection<X> <: X
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handler(value as any);
     }
   }
@@ -136,7 +137,8 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const promises = [...handlerSet].map(handler =>
       Promise.resolve().then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- it's safe
+        // forall X. UnionToIntersection<X> <: X
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         handler(value as any);
       })
     );
