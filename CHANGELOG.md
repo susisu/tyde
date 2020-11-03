@@ -1,3 +1,6 @@
+## 0.3.4 (2020-11-03)
+- Fix events marked as `never` could still be emitted if union `key` is given
+
 ## 0.3.3 (2020-11-03)
 - Fix events marked as `never` could be emitted
 
