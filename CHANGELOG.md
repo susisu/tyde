@@ -1,3 +1,6 @@
+## 0.3.3 (2020-11-03)
+- Fix events marked as `never` could be emitted
+
 ## 0.3.2 (2020-11-02)
 - Improve typings
   - Now `Emitter` can take union `key`s like `"foo" | "bar"`.
