@@ -1,4 +1,7 @@
 # @susisu/tyde
+
+[![CI](https://github.com/susisu/tyde/workflows/CI/badge.svg)](https://github.com/susisu/tyde/actions?query=workflow%3ACI)
+
 Typed event emitter
 
 ## Installation
