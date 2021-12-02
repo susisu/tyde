@@ -99,8 +99,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const copyHandlerSet = new Set(handlerSet);
     for (const handler of copyHandlerSet) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      handler(value as any);
+      handler(value as EventTypes[K]);
     }
   }
 
@@ -128,8 +127,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const promises = [...handlerSet].map(handler =>
       Promise.resolve().then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        handler(value as any);
+        handler(value as EventTypes[K]);
       })
     );
     await Promise.all(promises);
