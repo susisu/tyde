@@ -1,3 +1,6 @@
+## 0.3.5 (2021-12-02)
+- Upgrade devDependencies
+
 ## 0.3.4 (2020-11-03)
 - Fix events marked as `never` could still be emitted if union `key` is given
 
