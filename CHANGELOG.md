@@ -1,3 +1,6 @@
+## 0.3.6 (2022-05-28)
+- Include source files in the distribution
+
 ## 0.3.5 (2021-12-02)
 - Upgrade devDependencies
 
