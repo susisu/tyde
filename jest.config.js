@@ -2,10 +2,10 @@
 
 module.exports = {
   roots: ["./src"],
-  testMatch: ["**/__tests__/**/*.spec.ts"],
+  testMatch: ["**/*.{test,spec}.{ts,tsx}"],
   testEnvironment: "node",
   collectCoverage: true,
-  collectCoverageFrom: ["./src/**/*.ts", "!./src/**/*.spec.ts"],
+  collectCoverageFrom: ["./src/**/*.{ts,tsx}", "!./src/**/*.{test,spec}.{ts,tsx}"],
   coverageDirectory: "coverage",
   globals: {
     "ts-jest": {
@@ -13,6 +13,6 @@ module.exports = {
     },
   },
   transform: {
-    "\\.ts$": "ts-jest",
+    "\\.tsx?$": "ts-jest",
   },
 };

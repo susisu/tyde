@@ -1,4 +1,4 @@
-import { Emitter } from "../emitter";
+import { Emitter } from "./emitter";
 
 type EventTypes = {
   str: string;
@@ -6,7 +6,7 @@ type EventTypes = {
 };
 
 describe("Emitter", () => {
-  describe("on", () => {
+  describe("#on", () => {
     it("should attach a handler function", () => {
       const emitter = new Emitter<EventTypes>();
 
@@ -54,7 +54,7 @@ describe("Emitter", () => {
     });
   });
 
-  describe("off", () => {
+  describe("#off", () => {
     it("should remove a handler function", () => {
       const emitter = new Emitter<EventTypes>();
 
@@ -70,7 +70,7 @@ describe("Emitter", () => {
     });
   });
 
-  describe("emitSync", () => {
+  describe("#emitSync", () => {
     it("should synchronously invoke handler functions attached to a key", () => {
       const emitter = new Emitter<EventTypes>();
 
@@ -85,7 +85,7 @@ describe("Emitter", () => {
     });
   });
 
-  describe("emit", () => {
+  describe("#emit", () => {
     it("should asynchronously invoke handler functions attached to a key", async () => {
       const emitter = new Emitter<EventTypes>();
 

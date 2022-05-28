@@ -1,7 +1,7 @@
-import { Subscription, CompositeSubscription } from "../subscription";
+import { Subscription, CompositeSubscription } from "./subscription";
 
 describe("Subscription", () => {
-  describe("unsubscribe", () => {
+  describe("#unsubscribe", () => {
     it("should call the function which is attached at the creation", () => {
       const callback = jest.fn();
       const subscription = new Subscription(callback);
@@ -19,7 +19,7 @@ describe("Subscription", () => {
 });
 
 describe("CompositeSubscription", () => {
-  describe("add", () => {
+  describe("#add", () => {
     it("should add a subscription to the set of subscriptions", () => {
       const callback = jest.fn();
       const subscription = new Subscription(callback);
@@ -34,7 +34,7 @@ describe("CompositeSubscription", () => {
     });
   });
 
-  describe("remove", () => {
+  describe("#remove", () => {
     it("should remove a subscription from the set", () => {
       const callback = jest.fn();
       const subscription = new Subscription(callback);
@@ -50,7 +50,7 @@ describe("CompositeSubscription", () => {
     });
   });
 
-  describe("clear", () => {
+  describe("#clear", () => {
     it("should remove all the subsciptions from the set", () => {
       const callback1 = jest.fn();
       const subscription1 = new Subscription(callback1);
@@ -71,7 +71,7 @@ describe("CompositeSubscription", () => {
     });
   });
 
-  describe("unsubscribe", () => {
+  describe("#unsubscribe", () => {
     it("should unsubscribe all the subsciptions in the set", () => {
       const callback1 = jest.fn();
       const subscription1 = new Subscription(callback1);
