@@ -7,7 +7,10 @@
   "author": "Susisu <susisu2413@yahoo.co.jp>",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "src",
+    "!src/**/*.{test,spec}.{ts,tsx}",
+    "!src/**/__tests__"
   ],
   "scripts": {
     "lint": "run-s lint:eslint lint:prettier",
