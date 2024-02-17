@@ -1,7 +1,6 @@
 "use strict";
 
 module.exports = {
-  plugins: ["jest", "jest-formatting"],
   overrides: [
     {
       files: ["*.ts"],
@@ -20,13 +19,6 @@ module.exports = {
       },
       rules: {
         "eslint-comments/no-unused-disable": "error",
-      },
-    },
-    {
-      files: ["*.spec.ts"],
-      extends: ["plugin:jest/recommended", "plugin:jest-formatting/recommended"],
-      env: {
-        "jest/globals": true,
       },
     },
     {
