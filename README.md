@@ -5,13 +5,18 @@
 Typed event emitter
 
 ## Installation
+
 ``` shell
+# npm
 npm i @susisu/tyde
-# or
+# yarn
 yarn add @susisu/tyde
+# pnpm
+pnpm add @susisu/tyde
 ```
 
 ## Usage
+
 tyde provides API that is similar to [EventEmitter](https://nodejs.org/api/events.html) and [event-kit](https://github.com/atom/event-kit).
 
 The simplest usage is subscribing events with `.on()` and emitting events with `.emit()`.
@@ -57,15 +62,16 @@ emitter.emit("change", "test"); // type error: mismatched type
 ```
 
 ## Difference from other event emitters
+
 By design, tyde has some difference from other event emitter libraries:
 
 - No wildcards, because of the strongly typed interface.
 - Events are emitted asynchronously by default.
   - Usually event handlers should not care whether it is called synchronously or asynchronously.
-  - There is also a synchronous version `.emitSync()`, but it is not always recommended.
+  - There is also a synchronous version `.emitSync()`, but it is not generally recommended.
 - Invocation order of event handlers is not guaranteed in any way.
   - Specifying execution order in a less explicit way will lower the readability of code.
-  - If you still want one, invoke multiple functions in one event handler, or separate the event into multiple stages.
+  - If you still want one, invoke functions sequentially in one event handler, or separate the event into multiple stages.
 
 ## License
 [MIT License](http://opensource.org/licenses/mit-license.php)
