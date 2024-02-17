@@ -1,4 +1,5 @@
-import { Unsubscribable, Subscription } from "./subscription";
+import type { Unsubscribable } from "./subscription";
+import { Subscription } from "./subscription";
 
 type AnyKey = string | number | symbol;
 
@@ -97,6 +98,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const copyHandlerSet = new Set(handlerSet);
     for (const handler of copyHandlerSet) {
+      // eslint-disable-next-line @susisu/safe-typescript/no-type-assertion
       handler(value as EventTypes[K]);
     }
   }
@@ -125,6 +127,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     }
     const promises = [...handlerSet].map((handler) =>
       Promise.resolve().then(() => {
+        // eslint-disable-next-line @susisu/safe-typescript/no-type-assertion
         handler(value as EventTypes[K]);
       }),
     );
