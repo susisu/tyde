@@ -1,6 +1,6 @@
 {
   "name": "@susisu/tyde",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Typed event emitter",
   "repository": "https://github.com/susisu/tyde.git",
   "author": "Susisu <susisu2413@yahoo.co.jp>",
