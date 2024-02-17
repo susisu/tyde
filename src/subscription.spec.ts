@@ -1,9 +1,10 @@
+import { vi, describe, it, expect } from "vitest";
 import { Subscription, CompositeSubscription } from "./subscription";
 
 describe("Subscription", () => {
   describe("#unsubscribe", () => {
     it("should call the function which is attached at the creation", () => {
-      const callback = jest.fn();
+      const callback = vi.fn(() => {});
       const subscription = new Subscription(callback);
 
       expect(callback).not.toHaveBeenCalled();
@@ -21,7 +22,7 @@ describe("Subscription", () => {
 describe("CompositeSubscription", () => {
   describe("#add", () => {
     it("should add a subscription to the set of subscriptions", () => {
-      const callback = jest.fn();
+      const callback = vi.fn(() => {});
       const subscription = new Subscription(callback);
 
       const composite = new CompositeSubscription();
@@ -36,7 +37,7 @@ describe("CompositeSubscription", () => {
 
   describe("#remove", () => {
     it("should remove a subscription from the set", () => {
-      const callback = jest.fn();
+      const callback = vi.fn(() => {});
       const subscription = new Subscription(callback);
 
       const composite = new CompositeSubscription();
@@ -52,9 +53,9 @@ describe("CompositeSubscription", () => {
 
   describe("#clear", () => {
     it("should remove all the subsciptions from the set", () => {
-      const callback1 = jest.fn();
+      const callback1 = vi.fn(() => {});
       const subscription1 = new Subscription(callback1);
-      const callback2 = jest.fn();
+      const callback2 = vi.fn(() => {});
       const subscription2 = new Subscription(callback2);
 
       const composite = new CompositeSubscription();
@@ -73,9 +74,9 @@ describe("CompositeSubscription", () => {
 
   describe("#unsubscribe", () => {
     it("should unsubscribe all the subsciptions in the set", () => {
-      const callback1 = jest.fn();
+      const callback1 = vi.fn(() => {});
       const subscription1 = new Subscription(callback1);
-      const callback2 = jest.fn();
+      const callback2 = vi.fn(() => {});
       const subscription2 = new Subscription(callback2);
 
       const composite = new CompositeSubscription();
