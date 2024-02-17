@@ -17,10 +17,8 @@ type ValueOmittableKeyOf<EventTypes extends object> = {
   [K in keyof EventTypes]: undefined extends EventTypes[K] ? K : never;
 }[keyof EventTypes];
 
-type Value<EventTypes extends object, K extends keyof EventTypes> = (
-  K extends unknown ? (x: EventTypes[K]) => unknown : never
-) extends (x: infer I) => unknown
-  ? I
+type Value<EventTypes extends object, K extends keyof EventTypes> =
+  (K extends unknown ? (x: EventTypes[K]) => unknown : never) extends (x: infer I) => unknown ? I
   : never;
 
 export class Emitter<EventTypes extends object = DefaultEventTypes> {
@@ -48,7 +46,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
 
   on<K extends keyof EventTypes>(
     key: K,
-    handler?: Handler<EventTypes[K]>
+    handler?: Handler<EventTypes[K]>,
   ): Subscribable<EventTypes[K]> | Unsubscribable {
     if (handler) {
       let handlerSet: Set<Handler<EventTypes[K]>> | undefined = this.handlerSets[key];
@@ -61,7 +59,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
         this.off(key, handler);
       });
     } else {
-      return handler => this.on(key, handler);
+      return (handler) => this.on(key, handler);
     }
   }
 
@@ -110,7 +108,7 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
    */
   emit<K extends ValueOmittableKeyOf<EventTypes>>(
     key: K,
-    value?: Value<EventTypes, K>
+    value?: Value<EventTypes, K>,
   ): Promise<void>;
 
   /**
@@ -125,10 +123,10 @@ export class Emitter<EventTypes extends object = DefaultEventTypes> {
     if (!handlerSet) {
       return;
     }
-    const promises = [...handlerSet].map(handler =>
+    const promises = [...handlerSet].map((handler) =>
       Promise.resolve().then(() => {
         handler(value as EventTypes[K]);
-      })
+      }),
     );
     await Promise.all(promises);
   }
