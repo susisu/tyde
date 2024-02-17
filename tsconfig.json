@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
-    "incremental": true,
+    "noEmit": true,
     "rootDir": "src",
     "outDir": "lib",
-    "target": "es2018",
-    "lib": ["es2018"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noImplicitOverride": true,
+    "sourceMap": true,
     "declaration": true,
-    "strict": true
+    "declarationMap": false,
+    "skipLibCheck": true
   },
   "include": [
-    "./src/**/*"
+    "src/**/*"
   ]
 }
